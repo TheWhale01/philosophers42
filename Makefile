@@ -3,10 +3,10 @@ BIN_DIR=bin/
 OBJ_DIR=obj/
 SRC_DIR=src/
 INCLUDES=includes/
-CFLAGS=-Wall -Wextra -Werror -I $(INCLUDES)
+CFLAGS=-pthread -Wall -Wextra -Werror -I $(INCLUDES)
 NAME=$(BIN_DIR)philo
 
-CFILES=$(addprefix $(SRC_DIR), main.c)
+CFILES=$(addprefix $(SRC_DIR), main.c init.c utils/ft_atoi.c utils/utils.c)
 OBJS=$(patsubst $(SRC_DIR)%.c, $(OBJ_DIR)%.o, $(CFILES))
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
@@ -23,12 +23,10 @@ debug: CFLAGS=-Wall -Wextra -Werror -I $(INCLUDES) -g
 debug: $(NAME)
 
 clean:
-	$(MAKE) clean -C $(MLX_DIR)
 	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	rm -rf $(BIN_DIR)
-	$(MAKE) fclean -C $(LIBFT_DIR)
 
 sanitize:CFLAGS=-Wall -Wextra -Werror -I $(INCLUDES) -fsanitize=address
 sanitize: $(NAME)
