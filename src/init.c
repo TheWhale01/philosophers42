@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 12:17:15 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/14 12:25:50 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/14 16:27:31 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,22 +31,25 @@ t_env	*create_env(int ac, char **av)
 	env->nb_eat = -1;
 	if (ac == 6)
 		env->nb_eat = ft_atoi(av[5]);
+	env->nb_philos = ft_atoi(av[1]);
 	env->time_to_die = ft_atoi(av[2]);
 	env->time_to_eat = ft_atoi(av[3]);
 	env->time_to_sleep = ft_atoi(av[4]);
 	return (env);
 }
 
-t_philo	*create_philo(int ac, char **av)
+t_philo	*create_philo(int ac, char **av, int id)
 {
 	t_philo	*philo;
 
 	philo = malloc(sizeof(t_philo) * 1);
 	if (!philo)
 		return (NULL);
+	philo->id = id;
 	philo->fork_l = 1;
 	philo->fork_r = NULL;
 	philo->state = EAT;
+	philo->last_meal = 0;
 	philo->env = create_env(ac, av);
 	if (!philo->env)
 	{
@@ -70,7 +73,7 @@ t_philo	**create_philos(int ac, char **av)
 	i = -1;
 	while (++i < nb_philo)
 	{
-		philo_tab[i] = create_philo(ac, av);
+		philo_tab[i] = create_philo(ac, av, i + 1);
 		if (!philo_tab[i] || !philo_tab[i]->env)
 			return (free_philo(philo_tab, i + 1));
 	}
