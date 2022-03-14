@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 11:04:21 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/14 11:24:29 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/14 12:20:00 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,20 @@
 # define THINK 1
 # define SLEEP 2
 
+typedef struct s_env
+{
+	int	nb_eat;
+	int	time_to_eat;
+	int	time_to_die;
+	int	time_to_sleep;
+}	t_env;
+
 typedef struct s_philo
 {
 	int			*fork_r;
 	int			fork_l;
 	int			state;
+	t_env		*env;
 	pthread_t	thread;
 }	t_philo;
 
@@ -33,6 +42,6 @@ void	exit_msg(int exit_code, char *str);
 
 void	*free_philo(t_philo **tab, int len);
 
-t_philo	**create_philos(int nb_philo);
+t_philo	**create_philos(int ac, char **av);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 12:24:10 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/14 11:46:33 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/14 12:20:40 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,12 @@ void	*free_philo(t_philo **tab, int len)
 {
 	int	i;
 
-	i = -1;
-	while (++i < len)
+	i = 0;
+	while (tab && tab[i] && i < len)
 	{
 		pthread_join(tab[i]->thread, NULL);
-		free(tab[i]);
+		free(tab[i]->env);
+		free(tab[i++]);
 	}
 	free(tab);
 	return (NULL);
