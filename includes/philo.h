@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 11:04:21 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/09 12:31:37 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/14 11:24:29 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@ typedef struct s_philo
 int		ft_atoi(const char *nptr);
 
 void	exit_msg(int exit_code, char *str);
-void	free_philo(t_philo **tab, int len);
+
+void	*free_philo(t_philo **tab, int len);
+
+t_philo	**create_philos(int nb_philo);
 
 #endif

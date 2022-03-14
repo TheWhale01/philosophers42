@@ -19,7 +19,7 @@ $(NAME): $(OBJS)
 
 all: $(NAME)
 
-debug: CFLAGS=-Wall -Wextra -Werror -I $(INCLUDES) -g
+debug: CFLAGS=-pthread -Wall -Wextra -Werror -I $(INCLUDES) -g
 debug: $(NAME)
 
 clean:
@@ -28,7 +28,7 @@ clean:
 fclean: clean
 	rm -rf $(BIN_DIR)
 
-sanitize:CFLAGS=-Wall -Wextra -Werror -I $(INCLUDES) -fsanitize=address
+sanitize:CFLAGS=-pthread -Wall -Wextra -Werror -I $(INCLUDES) -fsanitize=address
 sanitize: $(NAME)
 
 re: fclean all
