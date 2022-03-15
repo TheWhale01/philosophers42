@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 12:17:15 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/15 13:44:19 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/15 16:35:37 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,8 @@ t_philo	*create_philo(int id, t_env *env)
 	if (!philo)
 		return (NULL);
 	philo->id = id;
-	philo->fork_l = 1;
+	philo->fork_l = 0;
 	philo->fork_r = NULL;
-	philo->state = EAT;
 	philo->last_meal = 0;
 	philo->env = env;
 	pthread_mutex_init(&philo->mutex_fork, NULL);
