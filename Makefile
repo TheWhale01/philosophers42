@@ -6,7 +6,7 @@ INCLUDES=includes/
 CFLAGS=-pthread -Wall -Wextra -Werror -I $(INCLUDES)
 NAME=$(BIN_DIR)philo
 
-CFILES=$(addprefix $(SRC_DIR), main.c init.c utils/ft_atoi.c utils/utils.c)
+CFILES=$(addprefix $(SRC_DIR), main.c init.c philo.c utils/ft_atoi.c utils/utils.c)
 OBJS=$(patsubst $(SRC_DIR)%.c, $(OBJ_DIR)%.o, $(CFILES))
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
