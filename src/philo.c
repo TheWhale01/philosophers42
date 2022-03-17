@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 12:26:35 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/15 17:35:01 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/17 14:54:29 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,17 @@
 
 void	philo_eat(t_philo *philo)
 {
-	t_philo	*next_philo;
-
-	next_philo = philo + 1;
-	if (philo->id == philo->env->nb_philos)
-		next_philo = philo - philo->id;
 	pthread_mutex_lock(&philo->mutex_fork);
-	philo->fork_l = 1;
-	philo->fork_r = &(next_philo->fork_l);
-	philo->state = EAT;
-	printf("philo %d has taken a fork\nphilo %d has taken a fork\n",
-		philo->id, philo->id);
+	philo->state = FORKS;
 	print_state(philo);
+	pthread_mutex_lock(philo->mutex_next_fork);
+	print_state(philo);
+	philo->last_meal = get_ms() - philo->last_meal;
 	usleep(philo->env->time_to_eat);
-	philo->fork_l = 0;
-	philo->fork_r = NULL;
+	pthread_mutex_unlock(philo->mutex_next_fork);
 	pthread_mutex_unlock(&philo->mutex_fork);
+	if (philo->env->nb_eat != -1)
+		philo->env->nb_eat--;
 }
 
 void	philo_sleep(t_philo *philo)
@@ -54,7 +49,11 @@ void	philo_think(t_philo *philo)
 
 void	check_death(t_philo *philo)
 {
-	philo->state = DEAD;
+	if (philo->last_meal > philo->env->time_to_die)
+	{
+		print_state(philo);
+		philo->state = DEAD;
+	}
 }
 
 void	*live(void *ptr)
@@ -64,12 +63,15 @@ void	*live(void *ptr)
 	philo = (t_philo *)ptr;
 	if (philo->id % 2 == 0)
 		philo_eat(philo);
-	while (philo->state != DEAD)
+	while (philo->state != FINISHED && philo->state != DEAD)
 	{
 		philo_sleep(philo);
 		philo_think(philo);
 		philo_eat(philo);
-		// check_death(philo);
+		check_death(philo);
+		philo->env->start_time += get_ms();
+		if (!philo->env->nb_eat)
+			philo->state = FINISHED;
 	}
 	return (NULL);
 }
