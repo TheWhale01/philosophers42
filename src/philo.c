@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 12:26:35 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/18 14:51:46 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/18 15:09:43 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	philo_eat(t_philo *philo)
 	pthread_mutex_lock(philo->mutex_next_fork);
 	print_state(philo);
 	philo->last_meal = 0;
+	philo->state = EAT;
+	print_state(philo);
 	usleep(philo->env->time_to_eat);
 	pthread_mutex_unlock(philo->mutex_next_fork);
 	pthread_mutex_unlock(&philo->mutex_fork);
@@ -52,11 +54,11 @@ void	philo_think(t_philo *philo)
 
 void	check_death(t_philo *philo)
 {
-	philo->last_meal = get_ms() - philo->last_meal;
+	philo->last_meal = philo->env->start_time - philo->last_meal;
 	if (philo->last_meal > philo->env->time_to_die)
 	{
-		print_state(philo);
 		philo->state = DEAD;
+		print_state(philo);
 	}
 }
 
@@ -65,23 +67,17 @@ void	*live(void *ptr)
 	t_philo	*philo;
 
 	philo = (t_philo *)ptr;
-	philo->env->start_time = get_ms() - philo->env->start_time;
-	if (philo->id % 2 == 0)
-	{
-		philo_eat(philo);
-		check_death(philo);
-	}
 	while (philo->state != FINISHED && philo->state != DEAD)
 	{
+		philo->env->start_time = get_ms() - philo->env->start_time;
+		philo_eat(philo);
 		philo_sleep(philo);
 		philo_think(philo);
-		philo_eat(philo);
 		check_death(philo);
 		if (philo->env->nb_eat > 0)
 			philo->env->nb_eat--;
 		else if (!philo->env->nb_eat)
 			philo->state = FINISHED;
-		usleep(10);
 	}
 	return (NULL);
 }
