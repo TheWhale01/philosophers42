@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 12:24:10 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/17 14:50:38 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/17 15:27:52 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 void	print_state(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->env->mutex_write);
-	printf("%u %d ", philo->env->start_time, philo->id);
+	printf("%d %d ", philo->env->start_time, philo->id);
 	if (philo->state == EAT)
 		printf("is eating\n");
 	else if (philo->state == SLEEP)
@@ -56,8 +56,8 @@ void	exit_msg(int exit_code, char *str)
 
 unsigned int	get_ms(void)
 {
-	unsigned int	ms;
+	struct timeval	t;
 
-	ms = 0;
-	return (ms);
+	gettimeofday(&t, NULL);
+	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
 }
