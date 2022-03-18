@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 12:17:15 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/18 14:43:05 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/18 15:56:33 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ t_env	*create_env(int ac, char **av)
 	pthread_mutex_init(&env->mutex_sleep, NULL);
 	pthread_mutex_init(&env->mutex_think, NULL);
 	pthread_mutex_init(&env->mutex_write, NULL);
+	pthread_mutex_init(&env->mutex_death, NULL);
 	return (env);
 }
 

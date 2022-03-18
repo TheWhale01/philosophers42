@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 12:26:35 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/18 15:09:43 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/18 16:02:03 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,14 @@ void	philo_think(t_philo *philo)
 
 void	check_death(t_philo *philo)
 {
+	pthread_mutex_lock(&philo->env->mutex_death);
 	philo->last_meal = philo->env->start_time - philo->last_meal;
 	if (philo->last_meal > philo->env->time_to_die)
 	{
 		philo->state = DEAD;
 		print_state(philo);
 	}
+	pthread_mutex_unlock(&philo->env->mutex_death);
 }
 
 void	*live(void *ptr)
@@ -69,7 +71,9 @@ void	*live(void *ptr)
 	philo = (t_philo *)ptr;
 	while (philo->state != FINISHED && philo->state != DEAD)
 	{
+		pthread_mutex_lock(&philo->env->mutex_write);
 		philo->env->start_time = get_ms() - philo->env->start_time;
+		pthread_mutex_unlock(&philo->env->mutex_write);
 		philo_eat(philo);
 		philo_sleep(philo);
 		philo_think(philo);
