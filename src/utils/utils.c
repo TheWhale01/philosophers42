@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 12:24:10 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/17 15:27:52 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/18 16:25:07 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,41 +16,33 @@
 #include <sys/time.h>
 #include "philo.h"
 
-void	print_state(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->env->mutex_write);
-	printf("%d %d ", philo->env->start_time, philo->id);
-	if (philo->state == EAT)
-		printf("is eating\n");
-	else if (philo->state == SLEEP)
-		printf("is sleeping\n");
-	else if (philo->state == THINK)
-		printf("is thinking\n");
-	else if (philo->state == DEAD)
-		printf("died\n");
-	else if (philo->state == FORKS)
-		printf("has taken a fork\n");
-	pthread_mutex_unlock(&philo->env->mutex_write);
-}
-
-void	*free_philo(t_philo **tab, int len)
+void	*free_philo(t_main *main_thread, int len)
 {
 	int	i;
 
 	i = 0;
-	while (tab && tab[i] && i < len)
+	while (main_thread->philo_tab && main_thread->philo_tab[i] && i < len)
 	{
-		pthread_join(tab[i]->thread, NULL);
-		free(tab[i++]);
+		pthread_mutex_destroy(&main_thread->philo_tab[i]->mutex_fork);
+		pthread_mutex_destroy(main_thread->philo_tab[i]->mutex_next_fork);
+		pthread_mutex_destroy(&main_thread->philo_tab[i]->env->mutex_death);
+		pthread_mutex_destroy(&main_thread->philo_tab[i]->env->mutex_sleep);
+		pthread_mutex_destroy(&main_thread->philo_tab[i]->env->mutex_write);
+		pthread_mutex_destroy(&main_thread->philo_tab[i]->env->mutex_think);
+		pthread_join(main_thread->philo_tab[i++], NULL);
+		free(main_thread->philo_tab[i]);
 	}
-	free(tab);
+	free(main_thread->philo_tab);
+	free(main_thread);
 	return (NULL);
 }
 
-void	exit_msg(int exit_code, char *str)
+void	exit_msg(int exit_code, char *str, t_main *main_thread)
 {
 	if (str)
 		printf("%s\n", str);
+	if (main_thread)
+		free_philo(main_thread, main_thread->nb_philos);
 	exit(exit_code);
 }
 
