@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 12:26:35 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/17 15:32:35 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/18 14:51:46 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,12 @@ void	philo_eat(t_philo *philo)
 		philo->state = DEAD;
 		return ;
 	}
-	philo->last_meal = get_ms() - philo->last_meal;
 	pthread_mutex_lock(philo->mutex_next_fork);
 	print_state(philo);
+	philo->last_meal = 0;
 	usleep(philo->env->time_to_eat);
 	pthread_mutex_unlock(philo->mutex_next_fork);
 	pthread_mutex_unlock(&philo->mutex_fork);
-	if (philo->env->nb_eat > 0)
-		philo->env->nb_eat--;
 }
 
 void	philo_sleep(t_philo *philo)
@@ -54,6 +52,7 @@ void	philo_think(t_philo *philo)
 
 void	check_death(t_philo *philo)
 {
+	philo->last_meal = get_ms() - philo->last_meal;
 	if (philo->last_meal > philo->env->time_to_die)
 	{
 		print_state(philo);
@@ -78,8 +77,11 @@ void	*live(void *ptr)
 		philo_think(philo);
 		philo_eat(philo);
 		check_death(philo);
-		if (!philo->env->nb_eat)
+		if (philo->env->nb_eat > 0)
+			philo->env->nb_eat--;
+		else if (!philo->env->nb_eat)
 			philo->state = FINISHED;
+		usleep(10);
 	}
 	return (NULL);
 }
