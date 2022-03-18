@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 11:04:21 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/18 16:35:15 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/18 16:57:14 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,6 @@
 
 # include <stdint.h>
 # include <pthread.h>
-
-typedef struct s_main
-{
-	int		died;
-	int		nb_eat;
-	int		nb_philos;
-	t_philo	**philo_tab;
-}	t_main;
-
 
 typedef struct s_env
 {
@@ -47,6 +38,14 @@ typedef struct s_philo
 	pthread_mutex_t	*mutex_next_fork;
 }	t_philo;
 
+typedef struct s_main
+{
+	int		died;
+	int		nb_eat;
+	int		nb_philos;
+	t_philo	**philo_tab;
+}	t_main;
+
 int				ft_atoi(const char *nptr);
 
 void			print_state(t_philo *philo);
@@ -56,7 +55,7 @@ void			exit_msg(int exit_code, char *str, t_main *main_thread);
 void			*live(void *ptr);
 void			*free_philo(t_main *main_thread, int len);
 
-t_env			*create_env(int ac, char **av);
+t_env			*create_env(char **av);
 
 t_main			*create_philos(int ac, char **av, t_env *env);
 

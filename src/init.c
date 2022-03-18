@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 12:17:15 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/18 16:44:31 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/18 16:58:18 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 #include <stdlib.h>
 #include "philo.h"
 
-void	init_threads(t_philo **philo_tab)
+void	init_threads(t_main *main_thread)
 {
 	int	i;
 
 	i = -1;
-	while (philo_tab[++i])
-		pthread_create(&philo_tab[i]->thread, NULL, &live, philo_tab[i]);
+	while (main_thread->philo_tab[++i])
+		pthread_create(&main_thread->philo_tab[i]->thread,
+			NULL, &live, main_thread);
 }
 
 void	init_forks(t_main *main_thread)
@@ -41,7 +42,7 @@ void	init_forks(t_main *main_thread)
 	}
 }
 
-t_env	*create_env(int ac, char **av)
+t_env	*create_env(char **av)
 {
 	t_env	*env;
 
@@ -64,26 +65,25 @@ t_env	*create_env(int ac, char **av)
 void	create_philo(t_main *main_thread, t_env *env)
 {
 	int		i;
-	t_philo	*philo;
 
 	i = -1;
 	while (++i < main_thread->nb_philos)
 	{
 		main_thread->philo_tab[i] = malloc(sizeof(t_philo) * 1);
-		if (!philo)
+		if (!main_thread->philo_tab[i])
 			exit_msg(EXIT_FAILURE, "Memory error.", main_thread);
-		philo->mutex_next_fork = malloc(sizeof(pthread_mutex_t) * 1);
-		if (!philo->mutex_next_fork)
+		main_thread->philo_tab[i]->mutex_next_fork
+			= malloc(sizeof(pthread_mutex_t) * 1);
+		if (!main_thread->philo_tab[i]->mutex_next_fork)
 			exit_msg(EXIT_FAILURE, "Memory error.", main_thread);
-		philo->id = i + 1;
-		philo->env = env;
-		philo->last_meal = 0;
+		main_thread->philo_tab[i]->id = i + 1;
+		main_thread->philo_tab[i]->env = env;
+		main_thread->philo_tab[i]->last_meal = 0;
 	}
 }
 
 t_main	*create_philos(int ac, char **av, t_env *env)
 {
-	int		i;
 	t_main	*main_thread;
 
 	main_thread = malloc(sizeof(t_main) * 1);
@@ -101,7 +101,7 @@ t_main	*create_philos(int ac, char **av, t_env *env)
 	if (!main_thread->philo_tab)
 		exit_msg(EXIT_FAILURE, "Memory error.", NULL);
 	create_philo(main_thread, env);
-	init_forks(main_thread->philo_tab);
-	init_threads(main_thread->philo_tab);
+	init_forks(main_thread);
+	init_threads(main_thread);
 	return (main_thread);
 }

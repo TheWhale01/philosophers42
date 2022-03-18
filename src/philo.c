@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 12:26:35 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/18 16:08:45 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/18 16:49:17 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	*live(void *ptr)
 	t_main	*main_thread;
 
 	main_thread = (t_main *)ptr;
-	while (main_thread->died && main_thread->all_eaten)
+	while (main_thread->died && main_thread->nb_eat)
 	{
 		philo_eat(philo);
 		philo_sleep(philo);
