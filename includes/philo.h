@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 11:04:21 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/18 16:57:14 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/19 12:08:28 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,13 @@
 
 # include <stdint.h>
 # include <pthread.h>
+
+# define EAT 0
+# define DEAD 1
+# define SLEEP 2
+# define THINK 3
+# define FORKS 4
+# define FINISHED 5
 
 typedef struct s_env
 {
@@ -31,6 +38,7 @@ typedef struct s_env
 typedef struct s_philo
 {
 	int				id;
+	int				state;
 	int				last_meal;
 	t_env			*env;
 	pthread_t		thread;

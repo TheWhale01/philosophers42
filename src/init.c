@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 12:17:15 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/18 16:58:18 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/19 12:19:24 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	init_threads(t_main *main_thread)
 	int	i;
 
 	i = -1;
-	while (main_thread->philo_tab[++i])
+	while (++i < main_thread->nb_philos)
 		pthread_create(&main_thread->philo_tab[i]->thread,
 			NULL, &live, main_thread);
 }
@@ -29,7 +29,7 @@ void	init_forks(t_main *main_thread)
 	int	i;
 
 	i = -1;
-	while (main_thread->philo_tab[++i])
+	while (++i < main_thread->nb_philos)
 	{
 		pthread_mutex_init(&main_thread->philo_tab[i]->mutex_fork, NULL);
 		pthread_mutex_init(main_thread->philo_tab[i]->mutex_next_fork, NULL);
