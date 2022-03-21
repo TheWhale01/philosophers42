@@ -5,58 +5,70 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/14 12:26:35 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/19 12:20:23 by hubretec         ###   ########.fr       */
+/*   Created: 2022/03/21 10:55:19 by hubretec          #+#    #+#             */
+/*   Updated: 2022/03/21 14:32:16 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <unistd.h>
-#include <pthread.h>
 #include "philo.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-void	philo_eat(t_philo *philo)
+void	take_forks(t_main *main_thread, int id)
 {
-	pthread_mutex_lock(&philo->mutex_fork);
-	philo->state = FORKS;
-	print_state(philo);
-	pthread_mutex_lock(philo->mutex_next_fork);
-	print_state(philo);
-	philo->last_meal = 0;
-	philo->state = EAT;
-	print_state(philo);
-	usleep(philo->env->time_to_eat);
-	pthread_mutex_unlock(philo->mutex_next_fork);
-	pthread_mutex_unlock(&philo->mutex_fork);
-}
-
-void	philo_sleep(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->env->mutex_sleep);
-	philo->state = SLEEP;
-	print_state(philo);
-	usleep(philo->env->time_to_sleep);
-	pthread_mutex_unlock(&philo->env->mutex_sleep);
-}
-
-void	philo_think(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->env->mutex_think);
-	philo->state = THINK;
-	print_state(philo);
-	pthread_mutex_unlock(&philo->env->mutex_think);
-}
-
-void	check_death(t_philo *philo)
-{
-	pthread_mutex_lock(&philo->env->mutex_death);
-	philo->last_meal = philo->env->start_time - philo->last_meal;
-	if (philo->last_meal > philo->env->time_to_die)
+	main_thread->philos[id - 1]->state = FORKS;
+	if (id == main_thread->nb_philo)
 	{
-		philo->state = DEAD;
-		print_state(philo);
+		pthread_mutex_lock(&main_thread->forks[0]);
+		print_state(main_thread->philos[id - 1], &main_thread->write);
+		pthread_mutex_lock(&main_thread->forks[id - 1]);
+		print_state(main_thread->philos[id - 1], &main_thread->write);
 	}
-	pthread_mutex_unlock(&philo->env->mutex_death);
+	else
+	{
+		pthread_mutex_lock(&main_thread->forks[id - 1]);
+		print_state(main_thread->philos[id - 1], &main_thread->write);
+		pthread_mutex_lock(&main_thread->forks[id]);
+		print_state(main_thread->philos[id - 1], &main_thread->write);
+	}
+}
+
+void	drop_forks(t_main *main_thread, int id)
+{
+	if (id == main_thread->nb_philo)
+	{
+		pthread_mutex_unlock(&main_thread->forks[0]);
+		print_state(main_thread->philos[id - 1], &main_thread->write);
+		pthread_mutex_unlock(&main_thread->forks[id - 1]);
+		print_state(main_thread->philos[id - 1], &main_thread->write);
+	}
+	else
+	{
+		pthread_mutex_unlock(&main_thread->forks[id - 1]);
+		print_state(main_thread->philos[id - 1], &main_thread->write);
+		pthread_mutex_unlock(&main_thread->forks[id]);
+		print_state(main_thread->philos[id - 1], &main_thread->write);
+	}
+}
+
+void	philo_eat(t_main *main_thread, int id)
+{
+	take_forks(main_thread, id);
+	check_eat(main_thread);
+	main_thread->philos[id - 1]->nb_eat++;
+	main_thread->philos[id - 1]->state = EAT;
+	print_state(main_thread->philos[id - 1], &main_thread->write);
+	usleep(main_thread->time_to_eat);
+	drop_forks(main_thread, id);
+}
+
+void	philo_sleep_think(t_main *main_thread, int id, int state)
+{
+	pthread_mutex_lock(&main_thread->actions);
+	main_thread->philos[id - 1]->state = state;
+	print_state(main_thread->philos[id - 1], &main_thread->write);
+	pthread_mutex_unlock(&main_thread->actions);
 }
 
 void	*live(void *ptr)
@@ -65,15 +77,14 @@ void	*live(void *ptr)
 	t_main	*main_thread;
 
 	main_thread = (t_main *)ptr;
-	while (!main_thread->died && main_thread->nb_eat)
+	while (!main_thread->died)
 	{
 		i = -1;
-		while (++i < main_thread->nb_philos)
+		while (++i < main_thread->nb_philo)
 		{
-			philo_eat(main_thread->philo_tab[i]);
-			philo_sleep(main_thread->philo_tab[i]);
-			philo_think(main_thread->philo_tab[i]);
-			check_death(main_thread->philo_tab[i]);
+			philo_eat(main_thread, i + 1);
+			philo_sleep_think(main_thread, i + 1, SLEEP);
+			philo_sleep_think(main_thread, i + 1, THINK);
 		}
 	}
 	return (NULL);
