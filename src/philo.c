@@ -6,11 +6,12 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/22 14:20:48 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/22 15:22:04 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <stdio.h>
 
 void	*live(void *ptr)
 {
@@ -22,8 +23,6 @@ void	*live(void *ptr)
 		philo_eat(philo);
 		philo_sleep_think(philo, SLEEP);
 		philo_sleep_think(philo, THINK);
-		// if (philo->last_meal > philo->env->time_to_die)
-		// 	philo->env->died = 1;
 	}
 	return (NULL);
 }
@@ -33,6 +32,8 @@ int	check_eat(t_philo *philos)
 	int	i;
 
 	i = -1;
+	if (philos->env->limit_eat == -1)
+		return (0);
 	while (++i < philos->env->nb_philos)
 		if (philos[i].nb_eat < philos[i].env->limit_eat)
 			return (0);
