@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_atoll.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/23 15:08:04 by hubretec          #+#    #+#             */
-/*   Updated: 2021/12/19 19:56:13 by hubretec         ###   ########.fr       */
+/*   Created: 2021/12/19 21:19:51 by hubretec          #+#    #+#             */
+/*   Updated: 2021/12/19 21:22:04 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_atoi(const char *nptr)
+long long	ft_atoll(const char *nptr)
 {
-	int	nb;
-	int	minus;
+	long long	nb;
+	int			minus;
 
 	nb = 0;
 	minus = 1;

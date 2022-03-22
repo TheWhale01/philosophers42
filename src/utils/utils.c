@@ -5,49 +5,60 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/21 10:07:15 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/21 14:45:32 by hubretec         ###   ########.fr       */
+/*   Created: 2022/03/22 11:24:19 by hubretec          #+#    #+#             */
+/*   Updated: 2022/03/22 14:10:56 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <stdio.h>
-#include <stdlib.h>
+#include <sys/time.h>
 
-void	exit_msg(int exit_code, char *str)
-{
-	if (str)
-		printf("%s\n", str);
-	exit(exit_code);
-}
-
-void	free_main_thread(t_main *main_thread)
+int	check(int ac, char **av)
 {
 	int	i;
+	int	nb;
 
-	i = -1;
-	while (main_thread->philos[++i])
+	i = 0;
+	if (ac < 5 || ac > 6)
+		return (0);
+	while (++i < ac)
 	{
-		pthread_join(main_thread->philos[i]->thread, NULL);
-		free(main_thread->philos[i]);
+		nb = ft_atoll(av[i]);
+		if (ft_strlen(av[i]) > 10)
+			return (0);
+		else if (nb < 0 || nb > INT_MAX)
+			return (0);
 	}
-	free(main_thread->philos);
-	free(main_thread);
+	return (1);
 }
 
-void	print_state(t_philo *philo, pthread_mutex_t *write)
+unsigned int	get_ms(void)
 {
-	pthread_mutex_lock(write);
-	printf("%d ", philo->id);
-	if (philo->state == EAT)
-		printf("is eating\n");
-	else if (philo->state == SLEEP)
+	struct timeval	t;
+
+	gettimeofday(&t, NULL);
+	return ((t.tv_sec * 1000) + (t.tv_usec / 1000));
+}
+
+void	print_state(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->env->write);
+	printf("%u %d ", get_ms() - philo->env->start_time, philo->id);
+	if (philo->state == SLEEP)
 		printf("is sleeping\n");
-	else if (philo->state == DEAD)
-		printf("is dead\n");
 	else if (philo->state == THINK)
 		printf("is thinking\n");
+	else if (philo->state == EAT)
+		printf("is eating\n");
+	else if (philo->state == DEAD)
+		printf("died\n");
 	else if (philo->state == FORKS)
 		printf("has taken a fork\n");
-	pthread_mutex_unlock(write);
+	pthread_mutex_unlock(&philo->env->write);
+}
+
+void	free_philo(t_philo *philos)
+{
+	(void)philos;
 }

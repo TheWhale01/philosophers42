@@ -1,25 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
+/*   By: hubretec <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/22 11:15:40 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/22 13:31:04 by hubretec         ###   ########.fr       */
+/*   Created: 2021/12/07 13:35:30 by hubretec          #+#    #+#             */
+/*   Updated: 2021/12/19 18:20:17 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
-#include <stdio.h>
+#include <stddef.h>
 
-int	main(int ac, char **av)
+size_t	ft_strlen(const char *str)
 {
-	t_philo	*philos;
+	size_t	i;
 
-	if (!check(ac, av))
-		return (1);
-	philos = init(ac, av);
-	launch(philos);
-	return (0);
+	i = 0;
+	while (str && str[i])
+		i++;
+	return (i);
 }

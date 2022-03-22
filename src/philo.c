@@ -5,87 +5,57 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/21 10:55:19 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/21 14:32:16 by hubretec         ###   ########.fr       */
+/*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
+/*   Updated: 2022/03/22 14:20:48 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-void	take_forks(t_main *main_thread, int id)
-{
-	main_thread->philos[id - 1]->state = FORKS;
-	if (id == main_thread->nb_philo)
-	{
-		pthread_mutex_lock(&main_thread->forks[0]);
-		print_state(main_thread->philos[id - 1], &main_thread->write);
-		pthread_mutex_lock(&main_thread->forks[id - 1]);
-		print_state(main_thread->philos[id - 1], &main_thread->write);
-	}
-	else
-	{
-		pthread_mutex_lock(&main_thread->forks[id - 1]);
-		print_state(main_thread->philos[id - 1], &main_thread->write);
-		pthread_mutex_lock(&main_thread->forks[id]);
-		print_state(main_thread->philos[id - 1], &main_thread->write);
-	}
-}
-
-void	drop_forks(t_main *main_thread, int id)
-{
-	if (id == main_thread->nb_philo)
-	{
-		pthread_mutex_unlock(&main_thread->forks[0]);
-		print_state(main_thread->philos[id - 1], &main_thread->write);
-		pthread_mutex_unlock(&main_thread->forks[id - 1]);
-		print_state(main_thread->philos[id - 1], &main_thread->write);
-	}
-	else
-	{
-		pthread_mutex_unlock(&main_thread->forks[id - 1]);
-		print_state(main_thread->philos[id - 1], &main_thread->write);
-		pthread_mutex_unlock(&main_thread->forks[id]);
-		print_state(main_thread->philos[id - 1], &main_thread->write);
-	}
-}
-
-void	philo_eat(t_main *main_thread, int id)
-{
-	take_forks(main_thread, id);
-	check_eat(main_thread);
-	main_thread->philos[id - 1]->nb_eat++;
-	main_thread->philos[id - 1]->state = EAT;
-	print_state(main_thread->philos[id - 1], &main_thread->write);
-	usleep(main_thread->time_to_eat);
-	drop_forks(main_thread, id);
-}
-
-void	philo_sleep_think(t_main *main_thread, int id, int state)
-{
-	pthread_mutex_lock(&main_thread->actions);
-	main_thread->philos[id - 1]->state = state;
-	print_state(main_thread->philos[id - 1], &main_thread->write);
-	pthread_mutex_unlock(&main_thread->actions);
-}
 
 void	*live(void *ptr)
 {
-	int		i;
-	t_main	*main_thread;
+	t_philo	*philo;
 
-	main_thread = (t_main *)ptr;
-	while (!main_thread->died)
+	philo = (t_philo *)ptr;
+	while (!philo->env->died)
 	{
-		i = -1;
-		while (++i < main_thread->nb_philo)
-		{
-			philo_eat(main_thread, i + 1);
-			philo_sleep_think(main_thread, i + 1, SLEEP);
-			philo_sleep_think(main_thread, i + 1, THINK);
-		}
+		philo_eat(philo);
+		philo_sleep_think(philo, SLEEP);
+		philo_sleep_think(philo, THINK);
+		// if (philo->last_meal > philo->env->time_to_die)
+		// 	philo->env->died = 1;
 	}
 	return (NULL);
+}
+
+int	check_eat(t_philo *philos)
+{
+	int	i;
+
+	i = -1;
+	while (++i < philos->env->nb_philos)
+		if (philos[i].nb_eat < philos[i].env->limit_eat)
+			return (0);
+	return (1);
+}
+
+void	launch(t_philo *philos)
+{
+	int	i;
+
+	i = -1;
+	while (++i < philos->env->nb_philos)
+		pthread_create(&philos[i].thread, NULL, live, &philos[i]);
+	i = 0;
+	while (1)
+	{
+		if (philos[i].env->died || check_eat(philos))
+		{
+			free_philo(philos);
+			break ;
+		}
+		if (i == philos->env->nb_philos - 1)
+			i = 0;
+		i++;
+	}
 }

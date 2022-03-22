@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 11:04:21 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/21 14:38:23 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/22 14:20:54 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,46 +15,56 @@
 
 # include <pthread.h>
 
-# define EAT 0
-# define DEAD 1
-# define SLEEP 2
-# define THINK 3
-# define FORKS 4
-
 # define INT_MAX 2147483647
 
-typedef struct s_philo
+typedef enum e_state
 {
-	int				id;
-	int				state;
-	int				nb_eat;
-	pthread_t		thread;
-}	t_philo;
+	EAT,
+	DEAD,
+	SLEEP,
+	THINK,
+	FORKS,
+}	t_state;
 
-typedef struct s_main
+typedef struct s_env
 {
 	int				died;
-	int				nb_eat;
-	int				nb_philo;
+	int				limit_eat;
+	int				nb_philos;
+	int				start_time;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
-	t_philo			**philos;
 	pthread_mutex_t	write;
 	pthread_mutex_t	actions;
 	pthread_mutex_t	*forks;
-}	t_main;
+}	t_env;
 
-int		ft_atoi(const char *nptr);
 
-void	check_args(int ac, char **av);
-void	check_eat(t_main *main_thread);
-void	exit_msg(int exit_code, char *str);
-void	free_main_thread(t_main *main_thread);
-void	print_state(t_philo *philo, pthread_mutex_t *write);
+typedef struct s_philo
+{
+	int			id;
+	int			state;
+	int			nb_eat;
+	int			last_meal;
+	t_env		*env;
+	pthread_t	thread;
+}	t_philo;
 
-void	*live(void *ptr);
+int				check(int ac, char **av);
 
-t_main	*init_main_thread(int ac, char **av);
+void			launch(t_philo *philos);
+void			philo_eat(t_philo *philo);
+void			print_state(t_philo *philo);
+void			free_philo(t_philo *philos);
+void			philo_sleep_think(t_philo *philo, int state);
+
+size_t			ft_strlen(const char *str);
+
+t_philo			*init(int ac, char **av);
+
+long long		ft_atoll(const char *nptr);
+
+unsigned int	get_ms(void);
 
 #endif

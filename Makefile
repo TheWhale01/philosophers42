@@ -6,7 +6,7 @@ INCLUDES=includes/
 CFLAGS=-pthread -Wall -Wextra -Werror -I $(INCLUDES)
 NAME=$(BIN_DIR)philo
 
-CFILES=$(addprefix $(SRC_DIR), main.c ft_atoi.c check.c utils.c init.c philo.c)
+CFILES=$(addprefix $(SRC_DIR), utils/ft_atoll.c utils/ft_strlen.c utils/utils.c actions.c init.c main.c philo.c)
 OBJS=$(patsubst $(SRC_DIR)%.c, $(OBJ_DIR)%.o, $(CFILES))
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
@@ -40,4 +40,7 @@ re_debug: fclean debug
 
 re_sanitize: fclean sanitize
 
-.PHONY: all debug clean fclean sanitize re re_debug re_sanitize
+re_debug_sanitize: fclean debug_sanitize
+
+.PHONY: all debug clean fclean sanitize \
+re re_debug re_sanitize re_debug_sanitize
