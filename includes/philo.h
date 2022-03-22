@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 11:04:21 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/22 14:20:54 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/22 18:38:34 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ typedef struct s_env
 	pthread_mutex_t	*forks;
 }	t_env;
 
-
 typedef struct s_philo
 {
 	int			id;
@@ -57,6 +56,7 @@ void			launch(t_philo *philos);
 void			philo_eat(t_philo *philo);
 void			print_state(t_philo *philo);
 void			free_philo(t_philo *philos);
+void			philo_death(t_philo *philo);
 void			philo_sleep_think(t_philo *philo, int state);
 
 size_t			ft_strlen(const char *str);

@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/22 15:22:04 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/22 18:49:08 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ void	launch(t_philo *philos)
 			free_philo(philos);
 			break ;
 		}
-		if (i == philos->env->nb_philos - 1)
-			i = 0;
 		i++;
+		if (i >= philos->env->nb_philos - 1)
+			i = 0;
 	}
 }
