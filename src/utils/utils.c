@@ -6,12 +6,14 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:24:19 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/22 14:10:56 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/23 14:11:05 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <sys/time.h>
 
 int	check(int ac, char **av)
@@ -33,6 +35,24 @@ int	check(int ac, char **av)
 	return (1);
 }
 
+void	free_philo(t_philo *philos)
+{
+	int	i;
+
+	i = -1;
+	while (++i < philos->env->nb_philos)
+	{
+		pthread_join(philos[i].thread, NULL);
+		pthread_mutex_destroy(&philos->env->forks[i]);
+	}
+	pthread_mutex_destroy(&philos->env->write);
+	pthread_mutex_destroy(&philos->env->actions);
+	free(philos->env->forks);
+	free(philos->env);
+	free(philos);
+	philos = NULL;
+}
+
 unsigned int	get_ms(void)
 {
 	struct timeval	t;
@@ -44,6 +64,11 @@ unsigned int	get_ms(void)
 void	print_state(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->env->write);
+	if (philo->env->died && philo->state != DEAD)
+	{
+		pthread_mutex_unlock(&philo->env->write);
+		return ;
+	}
 	printf("%u %d ", get_ms() - philo->env->start_time, philo->id);
 	if (philo->state == SLEEP)
 		printf("is sleeping\n");
@@ -56,9 +81,4 @@ void	print_state(t_philo *philo)
 	else if (philo->state == FORKS)
 		printf("has taken a fork\n");
 	pthread_mutex_unlock(&philo->env->write);
-}
-
-void	free_philo(t_philo *philos)
-{
-	(void)philos;
 }
