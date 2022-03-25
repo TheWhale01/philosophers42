@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 12:06:34 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/25 10:20:32 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/25 10:42:46 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	philo_eat(t_philo *philo)
 	philo->state = EAT;
 	philo->last_meal = get_ms() - philo->env->start_time;
 	print_state(philo);
-	usleep(philo->env->time_to_eat);
+	ft_sleep(philo->env->time_to_eat);
 	drop_forks(philo);
 }
 
@@ -83,6 +83,6 @@ void	philo_sleep_think(t_philo *philo, int state)
 	philo->state = state;
 	print_state(philo);
 	if (state == SLEEP)
-		usleep(philo->env->time_to_sleep);
+		ft_sleep(philo->env->time_to_sleep);
 	pthread_mutex_unlock(&philo->env->actions);
 }

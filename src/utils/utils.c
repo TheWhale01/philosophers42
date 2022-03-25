@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:24:19 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/25 10:20:41 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/25 10:42:18 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,15 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
+
+void	ft_sleep(unsigned int ms)
+{
+	int	start;
+
+	start = get_ms();
+	while ((get_ms() - start) < ms)
+		usleep(ms / 10);
+}
 
 int	check(int ac, char **av)
 {
