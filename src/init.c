@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:23:27 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/25 10:04:38 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/25 11:30:44 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ void	init_env(t_env *env)
 		pthread_mutex_init(&env->forks[i], NULL);
 	pthread_mutex_init(&env->write, NULL);
 	pthread_mutex_init(&env->actions, NULL);
+	pthread_mutex_init(&env->death, NULL);
 }
 
 t_philo	*init(int ac, char **av)

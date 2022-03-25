@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 12:06:34 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/25 11:10:24 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/25 14:01:52 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,24 +20,25 @@ void	take_forks(t_philo *philo)
 	if (philo->id == philo->env->nb_philos)
 	{
 		pthread_mutex_lock(&philo->env->forks[0]);
+		if (philo->env->nb_philos == 1)
+		{
+			pthread_mutex_lock(&philo->env->death);
+			philo->env->died = 1;
+			pthread_mutex_unlock(&philo->env->death);
+			pthread_mutex_unlock(&philo->env->forks[0]);
+		}
 		philo->state = FORKS;
 		print_state(philo);
-		if (philo->env->nb_philos != 1)
-		{
-			pthread_mutex_lock(&philo->env->forks[philo->id - 1]);
-			print_state(philo);
-		}
+		pthread_mutex_lock(&philo->env->forks[philo->id - 1]);
+		print_state(philo);
 	}
 	else
 	{
 		pthread_mutex_lock(&philo->env->forks[philo->id - 1]);
 		philo->state = FORKS;
 		print_state(philo);
-		if (philo->env->nb_philos != 1)
-		{
-			pthread_mutex_lock(&philo->env->forks[philo->id]);
-			print_state(philo);
-		}
+		pthread_mutex_lock(&philo->env->forks[philo->id]);
+		print_state(philo);
 	}
 }
 
@@ -46,25 +47,26 @@ void	drop_forks(t_philo *philo)
 	if (philo->id == philo->env->nb_philos)
 	{
 		pthread_mutex_unlock(&philo->env->forks[0]);
-		if (philo->env->nb_philos != 1)
-			pthread_mutex_unlock(&philo->env->forks[philo->id - 1]);
+		if (philo->env->died)
+			return ;
+		pthread_mutex_unlock(&philo->env->forks[philo->id - 1]);
 	}
 	else
 	{
 		pthread_mutex_unlock(&philo->env->forks[philo->id - 1]);
-		if (philo->env->nb_philos != 1)
-			pthread_mutex_unlock(&philo->env->forks[philo->id]);
+		pthread_mutex_unlock(&philo->env->forks[philo->id]);
 	}
 }
 
 void	philo_death(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->env->actions);
-	printf("LAST MEAL TIME : %u\n", (get_ms() - philo->env->start_time) - philo->last_meal);
+	pthread_mutex_lock(&philo->env->death);
+	if (philo->env->died)
+		return ;
 	if ((get_ms() - philo->env->start_time) - philo->last_meal
 		> (unsigned int)philo->env->time_to_die)
 		philo->env->died = philo->id;
-	pthread_mutex_unlock(&philo->env->actions);
+	pthread_mutex_unlock(&philo->env->death);
 }
 
 void	philo_eat(t_philo *philo)

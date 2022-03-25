@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 11:04:21 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/25 10:54:37 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/25 13:45:34 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct s_env
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
+	pthread_mutex_t	death;
 	pthread_mutex_t	write;
 	pthread_mutex_t	actions;
 	pthread_mutex_t	*forks;
@@ -50,6 +51,7 @@ typedef struct s_philo
 	unsigned int	last_meal;
 }	t_philo;
 
+int				ft_is_number(char *str);
 int				check(int ac, char **av);
 
 void			launch(t_philo *philos);
