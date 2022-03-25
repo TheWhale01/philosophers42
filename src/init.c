@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:23:27 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/23 14:18:00 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/25 10:04:38 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ t_philo	*init_philo(t_env *env)
 		philos[i].id = i + 1;
 		philos[i].env = env;
 		philos[i].last_meal = 0;
-		philos[i].first_philo = &philos[0];
 	}
 	return (philos);
 }

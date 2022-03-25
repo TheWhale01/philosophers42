@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:24:19 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/23 14:11:05 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/25 10:20:41 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ unsigned int	get_ms(void)
 void	print_state(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->env->write);
-	if (philo->env->died && philo->state != DEAD)
+	if (philo->env->died)
 	{
 		pthread_mutex_unlock(&philo->env->write);
 		return ;
@@ -76,8 +76,6 @@ void	print_state(t_philo *philo)
 		printf("is thinking\n");
 	else if (philo->state == EAT)
 		printf("is eating\n");
-	else if (philo->state == DEAD)
-		printf("died\n");
 	else if (philo->state == FORKS)
 		printf("has taken a fork\n");
 	pthread_mutex_unlock(&philo->env->write);

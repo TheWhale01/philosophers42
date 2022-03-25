@@ -6,12 +6,14 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/23 14:18:04 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/25 10:28:36 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 int	check_eat(t_philo *philos)
 {
@@ -31,7 +33,7 @@ void	*live(void *ptr)
 	t_philo	*philo;
 
 	philo = (t_philo *)ptr;
-	while (!philo->env->died || check_eat(philo->first_philo))
+	while (!philo->env->died)
 	{
 		philo_eat(philo);
 		philo_sleep_think(philo, SLEEP);
@@ -48,5 +50,14 @@ void	launch(t_philo *philos)
 	i = -1;
 	while (++i < philos->env->nb_philos)
 		pthread_create(&philos[i].thread, NULL, live, &philos[i]);
-	free_philo(philos);
+	while (1)
+	{
+		if (check_eat(philos) || philos->env->died)
+		{
+			printf("%u %d died\n", (get_ms() - philos->env->start_time),
+				philos->env->died);
+			free_philo(philos);
+			exit(EXIT_SUCCESS);
+		}
+	}
 }

@@ -6,11 +6,13 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 12:06:34 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/22 18:44:08 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/25 10:20:32 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 void	take_forks(t_philo *philo)
@@ -58,12 +60,9 @@ void	drop_forks(t_philo *philo)
 void	philo_death(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->env->actions);
-	if (philo->last_meal > philo->env->time_to_die)
-	{
-		philo->state = DEAD;
-		philo->env->died = 1;
-		print_state(philo);
-	}
+	if (philo->last_meal - (get_ms() - philo->env->start_time)
+		> (unsigned int)philo->env->time_to_die)
+		philo->env->died = philo->id;
 	pthread_mutex_unlock(&philo->env->actions);
 }
 
@@ -72,7 +71,7 @@ void	philo_eat(t_philo *philo)
 	take_forks(philo);
 	philo->nb_eat++;
 	philo->state = EAT;
-	philo->last_meal = (get_ms() - philo->env->start_time) - philo->last_meal;
+	philo->last_meal = get_ms() - philo->env->start_time;
 	print_state(philo);
 	usleep(philo->env->time_to_eat);
 	drop_forks(philo);
