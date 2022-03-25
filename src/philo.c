@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/25 14:09:35 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/25 14:24:50 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ void	launch(t_philo *philos)
 			free_philo(philos);
 			pthread_mutex_unlock(&philos->env->death);
 			pthread_mutex_destroy(&philos->env->death);
+			free(philos->env);
+			free(philos);
 			exit(EXIT_SUCCESS);
 		}
 		pthread_mutex_unlock(&philos->env->death);
