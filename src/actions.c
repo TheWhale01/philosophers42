@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 12:06:34 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/25 10:42:46 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/25 11:10:24 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ void	drop_forks(t_philo *philo)
 void	philo_death(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->env->actions);
-	if (philo->last_meal - (get_ms() - philo->env->start_time)
+	printf("LAST MEAL TIME : %u\n", (get_ms() - philo->env->start_time) - philo->last_meal);
+	if ((get_ms() - philo->env->start_time) - philo->last_meal
 		> (unsigned int)philo->env->time_to_die)
 		philo->env->died = philo->id;
 	pthread_mutex_unlock(&philo->env->actions);
@@ -68,6 +69,7 @@ void	philo_death(t_philo *philo)
 
 void	philo_eat(t_philo *philo)
 {
+	philo_death(philo);
 	take_forks(philo);
 	philo->nb_eat++;
 	philo->state = EAT;

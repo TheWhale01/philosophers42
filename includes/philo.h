@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/09 11:04:21 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/25 10:41:20 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/25 10:54:37 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ typedef struct s_philo
 	int				id;
 	int				state;
 	int				nb_eat;
-	int				last_meal;
 	t_env			*env;
 	pthread_t		thread;
+	unsigned int	last_meal;
 }	t_philo;
 
 int				check(int ac, char **av);
