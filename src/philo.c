@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/29 14:56:33 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/29 15:23:35 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ void	*live(void *ptr)
 		philo_sleep_think(philo, SLEEP);
 		philo_sleep_think(philo, THINK);
 	}
+	if (philo->env->died)
+		printf("%d %d died\n", get_ms() - philo->env->start_time, philo->id);
 	return (NULL);
 }
 
