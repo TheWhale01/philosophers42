@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/31 10:36:20 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/31 11:28:04 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,4 +90,7 @@ void	launch(t_philo *philos)
 	i = -1;
 	while (++i < philos->env->nb_philos)
 		pthread_join(philos[i].thread, NULL);
+	free(philos->env->forks);
+	free(philos->env);
+	free(philos);
 }
