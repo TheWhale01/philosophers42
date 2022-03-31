@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/29 15:23:35 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/31 10:36:20 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,15 @@ int	check_eat(t_philo *philos)
 int	check_death(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->env->death);
-	if (philo->env->died)
+	if (philo->env->died == 1)
 	{
 		pthread_mutex_unlock(&philo->env->death);
 		return (1);
+	}
+	else if (philo->env->died > 1)
+	{
+		pthread_mutex_unlock(&philo->env->death);
+		return (2);
 	}
 	pthread_mutex_unlock(&philo->env->death);
 	return (0);
@@ -61,8 +66,13 @@ void	*live(void *ptr)
 		philo_sleep_think(philo, SLEEP);
 		philo_sleep_think(philo, THINK);
 	}
-	if (philo->env->died)
+	if (check_death(philo) == 1)
+	{
+		pthread_mutex_lock(&philo->env->write);
+		philo->env->died++;
 		printf("%d %d died\n", get_ms() - philo->env->start_time, philo->id);
+		pthread_mutex_unlock(&philo->env->write);
+	}
 	return (NULL);
 }
 
@@ -72,5 +82,12 @@ void	launch(t_philo *philos)
 
 	i = -1;
 	while (++i < philos->env->nb_philos)
+	{
+		if (i % 2)
+			ft_sleep(100);
 		pthread_create(&philos[i].thread, NULL, live, &philos[i]);
+	}
+	i = -1;
+	while (++i < philos->env->nb_philos)
+		pthread_join(philos[i].thread, NULL);
 }

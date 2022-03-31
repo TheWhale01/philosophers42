@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 12:06:34 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/29 15:24:13 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/31 10:26:23 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ void	take_forks(t_philo *philo)
 
 void	drop_forks(t_philo *philo)
 {
+	if (philo->env->nb_philos == 1)
+		return ;
 	if (philo->id == philo->env->nb_philos)
 	{
 		pthread_mutex_unlock(&philo->env->forks[0]);

@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:24:19 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/29 15:23:14 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/03/31 10:33:17 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ unsigned int	get_ms(void)
 void	print_state(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->env->write);
-	if (philo->env->died)
+	if (check_death(philo))
 	{
 		pthread_mutex_unlock(&philo->env->write);
 		return ;
