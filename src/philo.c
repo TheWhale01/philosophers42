@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
-/*   Updated: 2022/04/04 09:15:52 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/04/04 09:40:25 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,33 @@ int	check_death(t_philo *philo)
 	return (0);
 }
 
+void	check_end(t_philo *philos)
+{
+	int	i;
+
+	i = 0;
+	while (1)
+	{
+		philo_death(&philos[i]);
+		if (check_death(&philos[i]) == 1)
+		{
+			pthread_mutex_lock(&philos->env->write);
+			pthread_mutex_lock(&philos->env->death);
+			philos->env->died++;
+			pthread_mutex_unlock(&philos->env->death);
+			printf("%d %d died\n", get_ms() - philos->env->start_time,
+				philos[i].id);
+			pthread_mutex_unlock(&philos->env->write);
+			break ;
+		}
+		if (check_eat(philos))
+			break ;
+		i++;
+		if (i == philos->env->nb_philos)
+			i = 0;
+	}
+}
+
 void	*live(void *ptr)
 {
 	t_philo	*philo;
@@ -76,24 +103,6 @@ void	launch(t_philo *philos)
 	i = -1;
 	while (++i < philos->env->nb_philos)
 		pthread_create(&philos[i].thread, NULL, live, &philos[i]);
-	i = 0;
-	while (1)
-	{
-		if (check_death(&philos[i]) == 1)
-		{
-			pthread_mutex_lock(&philos->env->write);
-			pthread_mutex_lock(&philos->env->death);
-			philos->env->died++;
-			pthread_mutex_unlock(&philos->env->death);
-			printf("%d %d died\n", get_ms() - philos->env->start_time,
-				philos[i].id);
-			pthread_mutex_unlock(&philos->env->write);
-			break ;
-		}
-		philo_death(&philos[i]);
-		i++;
-		if (i == philos->env->nb_philos)
-			i = 0;
-	}
+	check_end(philos);
 	free_philos(philos);
 }

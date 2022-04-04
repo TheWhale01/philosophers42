@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:24:19 by hubretec          #+#    #+#             */
-/*   Updated: 2022/04/04 09:24:26 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/04/04 09:43:15 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@ int	check(int ac, char **av)
 	i = 0;
 	if (ac < 5 || ac > 6)
 		return (0);
-	if (!ft_atoll(av[1]))
-		return (0);
 	while (++i < ac)
 	{
 		nb = ft_atoll(av[i]);
+		if (i == 1 && (nb <= 0 || nb > 200))
+			return (0);
 		if (ft_strlen(av[i]) > 10 || !ft_is_number(av[i])
 			|| (nb < 0 || nb > INT_MAX))
 			return (0);
