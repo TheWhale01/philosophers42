@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 12:06:34 by hubretec          #+#    #+#             */
-/*   Updated: 2022/04/03 13:50:08 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/04/04 09:26:22 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ void	take_forks(t_philo *philo)
 		print_state(philo);
 		if (philo->env->nb_philos == 1)
 		{
+			pthread_mutex_unlock(&philo->env->forks[0]);
+			ft_sleep(philo->env->time_to_eat);
 			pthread_mutex_lock(&philo->env->death);
 			philo->env->died = 1;
-			ft_sleep(philo->env->time_to_eat);
 			pthread_mutex_unlock(&philo->env->death);
-			pthread_mutex_unlock(&philo->env->forks[0]);
 			return ;
 		}
 		pthread_mutex_lock(&philo->env->forks[philo->id - 1]);
@@ -71,14 +71,17 @@ void	philo_death(t_philo *philo)
 
 void	philo_eat(t_philo *philo)
 {
-	philo_death(philo);
 	take_forks(philo);
+	pthread_mutex_lock(&philo->env->eat);
 	philo->nb_eat++;
+	pthread_mutex_unlock(&philo->env->eat);
 	philo->state = EAT;
+	pthread_mutex_lock(&philo->env->death);
 	philo->last_meal = get_ms() - philo->env->start_time;
+	pthread_mutex_unlock(&philo->env->death);
 	print_state(philo);
-	ft_sleep(philo->env->time_to_eat);
 	drop_forks(philo);
+	ft_sleep(philo->env->time_to_eat);
 }
 
 void	philo_sleep_think(t_philo *philo, int state)
@@ -86,7 +89,7 @@ void	philo_sleep_think(t_philo *philo, int state)
 	pthread_mutex_lock(&philo->env->actions);
 	philo->state = state;
 	print_state(philo);
+	pthread_mutex_unlock(&philo->env->actions);
 	if (state == SLEEP)
 		ft_sleep(philo->env->time_to_sleep);
-	pthread_mutex_unlock(&philo->env->actions);
 }
