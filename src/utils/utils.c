@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:24:19 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/31 10:33:17 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/04/03 14:35:45 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,23 @@ int	check(int ac, char **av)
 			return (0);
 	}
 	return (1);
+}
+
+void	free_philos(t_philo *philos)
+{
+	int	i;
+
+	i = -1;
+	while (++i < philos->env->nb_philos)
+		pthread_mutex_destroy(&philos->env->forks[i]);
+	pthread_mutex_destroy(&philos->env->actions);
+	pthread_mutex_destroy(&philos->env->death);
+	pthread_mutex_destroy(&philos->env->write);
+	while (++i < philos->env->nb_philos)
+		pthread_join(philos[i].thread, NULL);
+	free(philos->env->forks);
+	free(philos->env);
+	free(philos);
 }
 
 unsigned int	get_ms(void)

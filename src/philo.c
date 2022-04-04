@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
-/*   Updated: 2022/03/31 11:28:04 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/04/03 14:48:44 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	launch(t_philo *philos)
 	while (++i < philos->env->nb_philos)
 	{
 		if (i % 2)
-			ft_sleep(100);
+			ft_sleep(philos->env->time_to_eat);
 		pthread_create(&philos[i].thread, NULL, live, &philos[i]);
 	}
 	i = -1;
