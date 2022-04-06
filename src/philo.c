@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
-/*   Updated: 2022/04/04 09:40:25 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/04/06 11:38:02 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,14 @@ void	launch(t_philo *philos)
 
 	i = -1;
 	while (++i < philos->env->nb_philos)
-		pthread_create(&philos[i].thread, NULL, live, &philos[i]);
+	{
+		if (pthread_create(&philos[i].thread, NULL, live, &philos[i]))
+		{
+			printf("Could not create all threads.\n");
+			philos->env->nb_philos = i;
+			philos->env->died = 1;
+		}
+	}
 	check_end(philos);
 	free_philos(philos);
 }
