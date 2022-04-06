@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
-/*   Updated: 2022/04/06 11:38:02 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/04/06 11:40:32 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,6 @@ int	check_death(t_philo *philo)
 		pthread_mutex_unlock(&philo->env->death);
 		return (1);
 	}
-	else if (philo->env->died > 1)
-	{
-		pthread_mutex_unlock(&philo->env->death);
-		return (2);
-	}
 	pthread_mutex_unlock(&philo->env->death);
 	return (0);
 }
@@ -63,12 +58,9 @@ void	check_end(t_philo *philos)
 	while (1)
 	{
 		philo_death(&philos[i]);
-		if (check_death(&philos[i]) == 1)
+		if (check_death(&philos[i]))
 		{
 			pthread_mutex_lock(&philos->env->write);
-			pthread_mutex_lock(&philos->env->death);
-			philos->env->died++;
-			pthread_mutex_unlock(&philos->env->death);
 			printf("%d %d died\n", get_ms() - philos->env->start_time,
 				philos[i].id);
 			pthread_mutex_unlock(&philos->env->write);
