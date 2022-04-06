@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 12:06:34 by hubretec          #+#    #+#             */
-/*   Updated: 2022/04/06 14:58:00 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/04/06 15:14:29 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,9 @@ void	philo_sleep_think(t_philo *philo, int state)
 	philo->state = state;
 	print_state(philo);
 	pthread_mutex_unlock(&philo->env->actions);
-	if (state == SLEEP)
+	if (state == SLEEP
+		&& philo->env->time_to_sleep <= philo->env->time_to_die)
 		ft_sleep(philo->env->time_to_sleep);
+	else if (state == SLEEP)
+		ft_sleep(philo->env->time_to_die);
 }
