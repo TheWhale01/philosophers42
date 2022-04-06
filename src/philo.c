@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 11:51:12 by hubretec          #+#    #+#             */
-/*   Updated: 2022/04/06 11:40:32 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/04/06 15:01:47 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,9 @@ void	*live(void *ptr)
 	t_philo	*philo;
 
 	philo = (t_philo *)ptr;
-	while (!check_death(philo))
+	while (!check_death(philo)
+		&& (philo->nb_eat < philo->env->limit_eat
+			|| philo->env->limit_eat == -1))
 	{
 		philo_eat(philo);
 		philo_sleep_think(philo, SLEEP);

@@ -6,7 +6,7 @@
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 12:06:34 by hubretec          #+#    #+#             */
-/*   Updated: 2022/04/04 09:26:22 by hubretec         ###   ########.fr       */
+/*   Updated: 2022/04/06 14:58:00 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,7 @@ void	philo_death(t_philo *philo)
 void	philo_eat(t_philo *philo)
 {
 	take_forks(philo);
-	pthread_mutex_lock(&philo->env->eat);
 	philo->nb_eat++;
-	pthread_mutex_unlock(&philo->env->eat);
 	philo->state = EAT;
 	pthread_mutex_lock(&philo->env->death);
 	philo->last_meal = get_ms() - philo->env->start_time;
