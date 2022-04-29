@@ -5,64 +5,65 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/09 11:04:21 by hubretec          #+#    #+#             */
-/*   Updated: 2022/04/06 11:31:42 by hubretec         ###   ########.fr       */
+/*   Created: 2022/04/29 16:39:54 by hubretec          #+#    #+#             */
+/*   Updated: 2022/04/29 17:39:58 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
 # include <pthread.h>
+# include <sys/time.h>
 
 # define INT_MAX 2147483647
 
-typedef enum e_state
+enum
 {
 	EAT,
-	DEAD,
 	SLEEP,
 	THINK,
 	FORKS,
-}	t_state;
+};
 
 typedef struct s_env
 {
 	int				died;
-	int				limit_eat;
 	int				nb_philos;
-	int				start_time;
+	int				limit_eat;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
-	pthread_mutex_t	eat;
+	unsigned int	start_time;
 	pthread_mutex_t	death;
 	pthread_mutex_t	write;
-	pthread_mutex_t	actions;
 	pthread_mutex_t	*forks;
 }	t_env;
 
 typedef struct s_philo
 {
-	int				id;
-	int				state;
-	int				nb_eat;
-	t_env			*env;
-	pthread_t		thread;
-	unsigned int	last_meal;
+	int			id;
+	int			state;
+	int			nb_eaten;
+	int			last_meal;
+	t_env		*env;
+	pthread_t	thread;
 }	t_philo;
 
+int				dead(t_philo *philo);
 int				ft_is_number(char *str);
 int				check(int ac, char **av);
-int				check_death(t_philo *philo);
 
 void			launch(t_philo *philos);
-void			ft_sleep(unsigned int ms);
 void			philo_eat(t_philo *philo);
-void			print_state(t_philo *philo);
-void			philo_death(t_philo *philo);
-void			free_philos(t_philo *philos);
+void			ft_sleep(unsigned int ms);
+void			print_state(t_philo	*philo);
 void			philo_sleep_think(t_philo *philo, int state);
+
+void			*free_philos(t_philo *philos);
 
 size_t			ft_strlen(const char *str);
 

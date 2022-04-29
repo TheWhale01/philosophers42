@@ -5,13 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hubretec <hubretec@student.42.fr >         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/22 11:15:40 by hubretec          #+#    #+#             */
-/*   Updated: 2022/04/05 14:35:43 by hubretec         ###   ########.fr       */
+/*   Created: 2022/04/29 16:41:30 by hubretec          #+#    #+#             */
+/*   Updated: 2022/04/29 17:40:30 by hubretec         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-#include <stdio.h>
 
 int	main(int ac, char **av)
 {
@@ -20,9 +19,10 @@ int	main(int ac, char **av)
 	if (!check(ac, av))
 	{
 		printf("Error\n");
-		return (1);
+		return (0);
 	}
 	philos = init(ac, av);
 	launch(philos);
+	free_philos(philos);
 	return (0);
 }
